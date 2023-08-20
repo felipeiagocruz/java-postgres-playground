@@ -20,12 +20,39 @@ public class AppBd {
         carregarDriverJDBC(); 
         try (Connection conn = getConnection()) {
         // listarEstados(conn);
-        localizarEstado(conn,"TO");
+        //localizarEstado(conn,"TO");
+        listarDadosTabela(conn,"cidade");
         }
         catch (SQLException e) {
             System.err.println("Não foi possível conectar ao banco de dados:"+ e.getMessage());        }
     }
 
+
+    private void listarDadosTabela(Connection conn, String tabela) {
+        var sql = "SELECT * from " + tabela;
+        try {
+            var statement = conn.createStatement();
+            var result = statement.executeQuery(sql);
+            var metadata = result.getMetaData(); 
+            int cols = metadata.getColumnCount();
+            for(int i=1; i<= cols;i++){
+                System.out.printf("%-25s |",metadata.getColumnName(i));
+           }
+           System.out.println();
+            while(result.next()){
+               
+               for(int i=1; i<= cols;i++){
+                    System.out.printf("%-25s |",result.getString(i));
+               }
+               System.out.println();
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.err.printf("Erro na execução da consulta" + e.getMessage());
+        }
+       
+
+    }
 
     private void localizarEstado(Connection conn, String uf) {
         try{
