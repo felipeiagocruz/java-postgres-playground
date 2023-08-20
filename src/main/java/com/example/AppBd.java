@@ -21,12 +21,77 @@ public class AppBd {
         try (Connection conn = getConnection()) {
         // listarEstados(conn);
         //localizarEstado(conn,"TO");
-        listarDadosTabela(conn,"cidade");
+        
+        var marca = new Marca();
+        marca.setId(1L);
+        var produto = new Produto();
+        long id = 203;
+        produto.setMarca(marca);
+        produto.setNome("Produto deletável");
+        produto.setValor(100D);
+        produto.setId(id);
+        //inserirProduto(conn,produto);
+        //excluirProduto(conn,id);
+        alterarProduto(conn,produto);
+        listarDadosTabela(conn,"produto");
+     
         }
         catch (SQLException e) {
             System.err.println("Não foi possível conectar ao banco de dados:"+ e.getMessage());        }
     }
 
+
+   private void excluirProduto(Connection conn, Long id) {
+        var sql = "DELETE FROM produto WHERE id = ?;";
+        try (var statement = conn.prepareStatement(sql);) {
+            statement.setLong(1,id);
+            if(statement.executeUpdate()>0){
+                System.out.println("Produto deletado com sucesso.");
+            }else
+                System.out.println("Nenhuma linha foi deletada.");
+            
+        } catch (Exception e) {
+            System.err.println("Falha na deleção do item." + e.getMessage());
+        }
+
+
+
+
+
+    }
+
+private void alterarProduto(Connection conn, Produto produto) {
+        var sql = "UPDATE produto SET nome = ?,marca_id = ?,valor = ? WHERE id = ?;";
+        try(var statement = conn.prepareStatement(sql);){
+        statement.setString(1,produto.getNome());
+        statement.setLong(2, produto.getMarca().getId());
+        statement.setDouble(3, produto.getValor());
+        statement.setDouble(4, produto.getId());
+        if(statement.executeUpdate()>0){
+            System.out.println("Produto alterado com sucesso.");
+        }else
+            System.out.println("Nenhuma linha foi alterada.");
+        }
+        catch(SQLException e){
+            System.err.println("Não foi possível inserir o produto no banco de dados" + e.getMessage());
+        }
+
+    }
+
+ private void inserirProduto(Connection conn, Produto produto) {
+        var sql = "INSERT INTO produto (nome,marca_id,valor) VALUES(?,?,?);";
+        try(var statement = conn.prepareStatement(sql);){
+        statement.setString(1,produto.getNome());
+        statement.setLong(2, produto.getMarca().getId());
+        statement.setDouble(3, produto.getValor());
+        statement.executeUpdate();
+        System.out.println("Produto criado.");
+        }
+        catch(SQLException e){
+            System.err.println("Não foi possível inserir o produto no banco de dados" + e.getMessage());
+        }
+
+    }
 
     private void listarDadosTabela(Connection conn, String tabela) {
         var sql = "SELECT * from " + tabela;
