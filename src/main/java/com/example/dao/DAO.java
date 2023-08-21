@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 public class DAO {
 
-    private Connection conn;
+    protected Connection conn;
     
     public DAO(Connection conn){
         this.conn = conn;

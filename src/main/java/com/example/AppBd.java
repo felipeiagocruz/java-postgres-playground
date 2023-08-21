@@ -7,6 +7,7 @@ import com.example.dao.ConnectionManager;
 import com.example.dao.DAO;
 import com.example.dao.EstadoDAO;
 import com.example.dao.ProdutoDAO;
+import com.example.model.Estado;
 import com.example.model.Marca;
 import com.example.model.Produto;
 
@@ -24,8 +25,11 @@ public class AppBd {
         var produtoDAO = new ProdutoDAO(conn);
         var DAO = new DAO(conn);
         
-        estadoDAO.listar();
-        estadoDAO.localizar("TO");
+        var listaEstados = estadoDAO.listar();
+        for (Estado estado : listaEstados) {
+            System.out.println(estado);
+        }
+        //estadoDAO.localizar("TO");
         
         var marca = new Marca();
         marca.setId(1L);
@@ -37,8 +41,8 @@ public class AppBd {
         produto.setId(id);
         //inserirProduto(conn,produto);
         //excluirProduto(conn,id);
-        produtoDAO.alterar(produto);
-        DAO.listarTabela("produto");
+        //produtoDAO.alterar(produto);
+        //DAO.listarTabela("produto");
      
         }
         catch (SQLException e) {
